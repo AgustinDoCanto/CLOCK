@@ -1,6 +1,7 @@
 # CLOCK - Lenguaje de programación
 
-# (Foto del proyecto)
+![CLOCK Standalone Version](img/ASCII_CODE_RUN.jpeg)
+![CLOCK Standalone Version](img/ASCII_CODE_RESULT.jpeg)
 
 # Indice
 
@@ -64,7 +65,7 @@ CLOCK utiliza dos 'bancos' de memoria acotados que se definen sobre el hardware 
 
 ### Bajo coste
 
-Como el lenguaje está destinado a correr sobre microcontroladores el consume energético de los mismos es extremadamente bajo, lo que permite al usuario contar con una plataforma programable portatil que se ejecute con baterias u otras fuentes de energia como paneles solares, logrando asi total independecia. Además el coste de los módulos lectores de SD (si no vienen ya integrados en el microcontrolador) rondan los 3 USD por lo que esta ampliación no supone un impacto económico significativo.
+Como el lenguaje está destinado a correr sobre microcontroladores el consumo energético de los mismos es extremadamente bajo, lo que permite al usuario contar con una plataforma programable portatil que se ejecute con baterias u otras fuentes de energia como paneles solares, logrando asi total independecia de la computadora. Además el coste de los módulos lectores de SD (si no vienen ya integrados en el microcontrolador) rondan los 3 USD por lo que esta ampliación no supondría un impacto económico significativo.
 
 ## Limitaciones de CLOCK
 
@@ -237,6 +238,5 @@ SYS PRT, AX20; => Imprimirá el caracter correspondiente al valor de AX20 en ASC
 
 **Ejemplo 3:**
 SYS INP, BX10; => Espera a la entrada por teclado y codifica a su valor ASCII la tecla ingresada, por ejemplo si se apretara la 'V' BX10 almacenaria el valor 86.
-
 
 
