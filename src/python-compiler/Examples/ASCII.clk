@@ -1,0 +1,9 @@
+mem bx00, cx93;
+sub bx00, nx33;
+mem ax20, cx93;
+
+LOOP:
+ sys prt, bx00;
+ sub bx00, cx01;
+ sub ax20, cx01;
+ jnz ax20, LOOP;

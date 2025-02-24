@@ -1,0 +1,9 @@
+mem ax00, cx79;
+mem ax01, cx88;
+mem ax20, cx20;
+
+LOOP:
+sys prt, ax00;
+sys prt, ax01;
+
+jnz ax20, LOOP;

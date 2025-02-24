@@ -1,0 +1,14 @@
+MAIN:
+
+ mem ax00, cx70;
+ sys prt, ax00;
+ sub ax00, cx01;
+ sys prt, ax00;
+ sub ax00, cx01;
+ sys prt, ax00;
+ sub ax00, cx01;
+ sys prt, ax00;
+ sub ax00, cx01;
+ sys prt, ax00;
+ sub ax00, cx01;
+ sys prt, ax00;

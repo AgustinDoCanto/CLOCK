@@ -1,0 +1,9 @@
+mem ax00, cx20;
+mem ax01, cx03;
+mul ax00, ax01;
+add ax00, cx05;
+sys prt, ax00;
+
+mem bx00, nx65;
+mul bx00, nx01;
+sys prt, bx00;
