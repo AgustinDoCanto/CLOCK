@@ -15,7 +15,9 @@ register_map = {
     "A": 0x01,
     "B": 0x02,
     "C": 0x03,
-    "N": 0x04
+    "N": 0x04,
+    "$A": 0x05,
+    "$B": 0x06
 }
 
 register_pairs_map = {
@@ -26,7 +28,19 @@ register_pairs_map = {
     "AC": 0x05,
     "BC": 0x06,
     "AN": 0x07,
-    "BN": 0x08
+    "BN": 0x08,
+    "$A$A": 0x09,
+    "$A$B": 0x0A,
+    "$B$A": 0x0B,
+    "$B$B": 0x0C,
+    "A$A": 0x0D,
+    "A$B": 0x0E,
+    "B$A": 0x0F,
+    "B$B": 0x10,
+    "$AA": 0x11,
+    "$AB": 0x12,
+    "$BA": 0x13,
+    "$BB": 0x14,
 }
 
 sys_opcode_map = {
@@ -61,22 +75,43 @@ def ensamblar_codigo(lines):
                 
                 # Manejo de instrucciones MEM
                 if parts[0] in ["MEM", "ADD", "SUB", "MUL", "DIV"]:
-                    bank1 = (parts[1][:1], int(parts[1][2:])) # Pair (BANK A or B, Value)
-                    bank2 = (parts[2][:1], int(parts[2][2:]))  # Pair (BANK A, B or C, Value)
+                    
+                    if parts[1][:1] == '$':
+                        bank1 = (parts[1][:2], int(parts[1][4:])) # Pair (BANK A or B, Value)
+                    else:
+                        bank1 = (parts[1][:1], int(parts[1][2:])) # Pair (BANK A or B, Value)
+
+                    
+                    if parts[2][:1] == '$':
+                        bank2 = (parts[2][:2], int(parts[2][4:]))  # Pair (BANK A, B or C, Value)
+                    else:
+                        bank2 = (parts[2][:1], int(parts[2][2:]))  # Pair (BANK A, B or C, Value)
+
                     instruction_line = [operation_code, bank1[1], bank2[1], register_pairs_map[f"{bank1[0]}{bank2[0]}"]]
                     print(f"{len(binario) // 4}: {instruction_line}") 
                     binario.extend(instruction_line)  # Agregar 4 bytes
 
                 if parts[0] == "SYS":
                     option = sys_opcode_map[parts[1]]
-                    bank = (parts[2][:1], int(parts[2][2:])) # Pair (BANK A or B, Value)
+                    
+                    
+                    if parts[1][:1] == '$':
+                        bank = (parts[2][:2], int(parts[2][4:])) # Pair (BANK A or B, Value)
+                    else:
+                        bank = (parts[2][:1], int(parts[2][2:])) # Pair (BANK A or B, Value)
+                    
                     instruction_line = [operation_code, option, bank[1], register_map[f"{bank[0]}"]]
                     print(f"{len(binario) // 4}: {instruction_line}") 
                     binario.extend(instruction_line)
 
                 elif parts[0] in ["JNZ"]:  # Manejo de saltos
                     position_to_jump = labels[parts[2]]
-                    bank = (parts[1][:1], int(parts[1][2:]))
+                    
+                    if parts[1][:1] == '$':
+                        bank = (parts[1][:2], int(parts[1][4:]))
+                    else:
+                        bank = (parts[1][:1], int(parts[1][2:]))
+                    
                     instruction_line = [operation_code, bank[1], position_to_jump, register_map[f"{bank[0]}"]] 
                     print(f"{len(binario) // 4}: {instruction_line}")
                     binario.extend(instruction_line)  # Agregar 4 bytes

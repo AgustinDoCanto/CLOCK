@@ -66,22 +66,10 @@ bool Memory::pos_is_zero(uint8_t bank, uint8_t pos) {
   switch(bank){
     case A: return this->bank_A[pos] == 0; break;
     case B: return this->bank_B[pos] == 0; break;
+    case SA: return this->bank_A[this->bank_A[pos]] == 0; break;
+    case SB: return this->bank_B[this->bank_B[pos]] == 0; break;
   }
 }
-
-void Memory::set_position_value(uint8_t register_map, uint8_t pos, int value){
-   switch(register_map){
-    case A: this->bank_A[pos] = (uint8_t)value; break;
-    case B: this->bank_B[pos] = value; break;
-   }
-}
-  
-int Memory::get_position_value(uint8_t register_map, uint8_t pos) {
-    switch(register_map){
-      case A: return (int)this->bank_A[pos]; break;
-      case B: return this->bank_B[pos]; break;
-    }
-  }
 
 void Memory::mem(uint8_t fst_pos, uint8_t snd_pos, uint8_t register_pair) {
   switch(register_pair){
@@ -93,8 +81,21 @@ void Memory::mem(uint8_t fst_pos, uint8_t snd_pos, uint8_t register_pair) {
         case BC: this->bank_B[fst_pos] =  (int)snd_pos; break;
         case AN: this->bank_A[fst_pos] =  (uint8_t)(-snd_pos); break;
         case BN: this->bank_B[fst_pos] =  (int)(-snd_pos); break;
-    }
+        case SASA: this->bank_A[this->bank_A[fst_pos]] =  this->bank_A[this->bank_A[snd_pos]]; break;
+        case SASB: this->bank_A[this->bank_A[fst_pos]] =  (uint8_t)this->bank_B[this->bank_B[snd_pos]]; break;
+        case SBSA: this->bank_B[this->bank_B[fst_pos]] =  (int)this->bank_A[this->bank_A[snd_pos]]; break;
+        case SBSB: this->bank_B[this->bank_B[fst_pos]] =  this->bank_B[this->bank_B[snd_pos]]; break;
+        case ASA: this->bank_A[fst_pos] =  this->bank_A[this->bank_A[snd_pos]]; break;
+        case ASB: this->bank_A[fst_pos] =  (uint8_t)this->bank_B[this->bank_B[snd_pos]]; break;
+        case BSA: this->bank_B[fst_pos] =  (int)this->bank_A[this->bank_A[snd_pos]]; break;
+        case BSB: this->bank_B[fst_pos] =  this->bank_B[this->bank_B[snd_pos]];  break;
+        case SAA: this->bank_A[this->bank_A[fst_pos]] =  this->bank_A[snd_pos]; break;
+        case SAB: this->bank_A[this->bank_A[fst_pos]] =  (uint8_t)this->bank_B[snd_pos];  break;
+        case SBA: this->bank_B[this->bank_B[fst_pos]] =  (int)this->bank_A[snd_pos]; break;
+        case SBB: this->bank_B[this->bank_B[fst_pos]] =  this->bank_B[snd_pos]; break;
   }
+}
+ 
 void Memory::aritmethic_sub(int fst_pos, int snd_pos, uint8_t register_pair) {
     switch(register_pair){
         case AA: this->bank_A[fst_pos] = this->bank_A[fst_pos] - this->bank_A[snd_pos]; break;
@@ -107,18 +108,32 @@ void Memory::aritmethic_sub(int fst_pos, int snd_pos, uint8_t register_pair) {
         case BN: this->bank_B[fst_pos] =  this->bank_B[fst_pos] - (int)(-snd_pos); break;
     }
   }
+  
 void Memory::aritmethic_add(int fst_pos, int snd_pos, uint8_t register_pair) {
       switch(register_pair){
-        case AA: this->bank_A[fst_pos] = this->bank_A[fst_pos] + this->bank_A[snd_pos]; break;
-        case AB: this->bank_A[fst_pos] = this->bank_A[fst_pos] + (uint8_t)this->bank_B[snd_pos]; break;
-        case BA: this->bank_B[fst_pos] =  this->bank_B[fst_pos] + (int)this->bank_A[snd_pos]; break;
-        case BB: this->bank_B[fst_pos] =  this->bank_B[fst_pos] + this->bank_B[snd_pos];  break;
-        case AC: this->bank_A[fst_pos] =  this->bank_A[fst_pos] + (uint8_t)snd_pos; break;
-        case BC: this->bank_B[fst_pos] =  this->bank_B[fst_pos] + (int)snd_pos; break;
-        case AN: this->bank_A[fst_pos] =  this->bank_A[fst_pos] + (uint8_t)(-snd_pos); break;
-        case BN: this->bank_B[fst_pos] =  this->bank_B[fst_pos] + (int)(-snd_pos); break;
+        case AA: this->bank_A[fst_pos] += this->bank_A[snd_pos]; break;
+        case AB: this->bank_A[fst_pos] += (uint8_t)this->bank_B[snd_pos]; break;
+        case BA: this->bank_B[fst_pos] += (int)this->bank_A[snd_pos]; break;
+        case BB: this->bank_B[fst_pos] += this->bank_B[snd_pos];  break;
+        case AC: this->bank_A[fst_pos] += (uint8_t)snd_pos; break;
+        case BC: this->bank_B[fst_pos] += (int)snd_pos; break;
+        case AN: this->bank_A[fst_pos] += (uint8_t)(-snd_pos); break;
+        case BN: this->bank_B[fst_pos] += (int)(-snd_pos); break;
+        case SASA: this->bank_A[this->bank_A[fst_pos]] +=  this->bank_A[this->bank_A[snd_pos]]; break;
+        case SASB: this->bank_A[this->bank_A[fst_pos]] +=  (uint8_t)this->bank_B[this->bank_B[snd_pos]]; break;
+        case SBSA: this->bank_B[this->bank_B[fst_pos]] +=  (int)this->bank_A[this->bank_A[snd_pos]]; break;
+        case SBSB: this->bank_B[this->bank_B[fst_pos]] +=  this->bank_B[this->bank_B[snd_pos]]; break;
+        case ASA: this->bank_A[fst_pos] +=  this->bank_A[this->bank_A[snd_pos]]; break;
+        case ASB: this->bank_A[fst_pos] +=  (uint8_t)this->bank_B[this->bank_B[snd_pos]]; break;
+        case BSA: this->bank_B[fst_pos] +=  (int)this->bank_A[this->bank_A[snd_pos]]; break;
+        case BSB: this->bank_B[fst_pos] +=  this->bank_B[this->bank_B[snd_pos]];  break;
+        case SAA: this->bank_A[this->bank_A[fst_pos]] +=  this->bank_A[snd_pos]; break;
+        case SAB: this->bank_A[this->bank_A[fst_pos]] +=  (uint8_t)this->bank_B[snd_pos];  break;
+        case SBA: this->bank_B[this->bank_B[fst_pos]] +=  (int)this->bank_A[snd_pos]; break;
+        case SBB: this->bank_B[this->bank_B[fst_pos]] +=  this->bank_B[snd_pos]; break;
     }
   }
+
 void Memory::aritmethic_mul(int fst_pos, int snd_pos, uint8_t register_pair) {
       switch(register_pair){
         case AA: this->bank_A[fst_pos] = this->bank_A[fst_pos] * this->bank_A[snd_pos]; break;

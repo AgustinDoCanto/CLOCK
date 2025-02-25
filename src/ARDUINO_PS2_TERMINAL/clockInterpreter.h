@@ -56,7 +56,9 @@ enum RegisterMap {
     A = 0x01,
     B = 0x02,
     C = 0x03,
-    N = 0x04
+    N = 0x04,
+    SA = 0x05,
+    SB = 0x06
 };
 
 enum RegisterPair {
@@ -67,7 +69,19 @@ enum RegisterPair {
     AC = 0x05,
     BC = 0x06,
     AN = 0x07,
-    BN = 0x08
+    BN = 0x08,
+    SASA = 0x09,
+    SASB = 0x0A,
+    SBSA = 0x0B,
+    SBSB = 0x0C,
+    ASA = 0x0D,
+    ASB = 0x0E,
+    BSA = 0x0F,
+    BSB = 0x10,
+    SAA = 0x11,
+    SAB = 0x12,
+    SBA = 0x13,
+    SBB = 0x14
 };
 
 enum SysOpcode {
@@ -83,8 +97,6 @@ class Memory {
     int bank_B[BANK_B_LENGTH];
          
     bool pos_is_zero(uint8_t register_map, uint8_t pos);
-    void set_position_value(uint8_t register_map, uint8_t pos, int value);
-    int get_position_value(uint8_t register_map, uint8_t pos);
     
     void mem(uint8_t fst_val, uint8_t snd_val, uint8_t register_pair);
     void aritmethic_sub(int fst_val, int snd_val, uint8_t register_pair);
