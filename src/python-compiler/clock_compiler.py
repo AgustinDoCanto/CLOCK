@@ -94,8 +94,7 @@ def ensamblar_codigo(lines):
                 if parts[0] == "SYS":
                     option = sys_opcode_map[parts[1]]
                     
-                    
-                    if parts[1][:1] == '$':
+                    if parts[2][:1] == '$':
                         bank = (parts[2][:2], int(parts[2][4:])) # Pair (BANK A or B, Value)
                     else:
                         bank = (parts[2][:1], int(parts[2][2:])) # Pair (BANK A or B, Value)
