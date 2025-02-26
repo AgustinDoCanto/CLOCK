@@ -45,7 +45,21 @@ register_pairs_map = {
 
 sys_opcode_map = {
     "PRT": 0x01,
-    "INP": 0x02
+    "INP": 0x02,
+    "VAL": 0x03,
+    "FPO": 0x04,
+    "WRT": 0x05,
+    "WRB": 0x06,
+    "SEK": 0x07,
+    "RAD": 0x08,
+    "RAB": 0x09,
+    "FPC": 0x0A,
+    "DIG": 0x0B,
+    "ANG": 0x0C,
+    "IND": 0x0D,
+    "ING": 0x0E,
+    "TIM": 0x0F,
+    "SLP": 0x10
 }
 
 def split_line(line):
@@ -53,6 +67,7 @@ def split_line(line):
     if not line:  # Retornar una lista vacía si la línea está vacía
         return []
     splited_line = line.upper().replace(",", "").replace(";", "").split()
+    # for part in splited_line: print(part)
     return splited_line
 
 def ensamblar_codigo(lines):

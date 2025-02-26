@@ -1,5 +1,5 @@
-mem bx00, cx93;
-sub bx00, nx33;
+mem bx00, cx93; 
+sub bx00, nx33;  
 mem ax20, cx93;
 
 LOOP:
