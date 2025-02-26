@@ -18,7 +18,7 @@ void ClockInterpreter::run(File &file, DisplayManager &displayManager, PS2Keyboa
     
     file.seek(0);
     while (file.available()) {
-        int bytesLeidos = file.read(buffer, 4);  // Leer hasta 4 bytes
+        uint8_t bytesLeidos = file.read(buffer, 4);  // Leer hasta 4 bytes
         switch(buffer[0]){
             case MEM: this->memory.bank_op(buffer[1], buffer[2], buffer[3], buffer[0]); break;
             case ADD: this->memory.bank_op(buffer[1], buffer[2], buffer[3], buffer[0]); break;
@@ -37,24 +37,19 @@ void ClockInterpreter::run(File &file, DisplayManager &displayManager, PS2Keyboa
     
     #if DEBUG == 1
     debugln("\nFinal memory: ");
-    for(int i = 0; i < BANK_A_LENGTH; i++){
+    for(uint8_t i = 0; i < BANK_A_LENGTH; i++){
       if(memory.bank_A[i] != 0) debugln(i << " A: "<< memory.bank_A[i]);
     }
     
-    for(int i = 0; i < BANK_B_LENGTH; i++){
+    for(uint8_t i = 0; i < BANK_B_LENGTH; i++){
       if(memory.bank_B[i] != 0) debugln(i << " B: "<< memory.bank_B[i]);
     }
     #endif
 }
 
 Memory::Memory(){
-  for(int i=0; i < 32; i++) this->bank_A[i] = 0;
-  for(int i=0; i < 64; i++) this->bank_B[i] = 0;
-}
-
-void Memory::clear_memory(){
-  for(int i=0; i < 32; i++) this->bank_A[i] = 0;
-  for(int i=0; i < 64; i++) this->bank_B[i] = 0;
+  for(uint8_t i=0; i < BANK_A_LENGTH; i++) this->bank_A[i] = 0;
+  for(uint8_t i=0; i < BANK_B_LENGTH; i++) this->bank_B[i] = 0;
 }
 
 bool Memory::pos_is_zero(uint8_t bank, uint8_t pos) {

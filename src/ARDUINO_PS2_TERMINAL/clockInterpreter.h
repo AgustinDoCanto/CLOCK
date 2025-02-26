@@ -101,7 +101,6 @@ class Memory {
     
     bool pos_is_zero(uint8_t register_map, uint8_t pos);
     void bank_op(uint8_t fst_pos, uint8_t snd_pos, uint8_t register_pair, Opcode opcode); // Engloba las operaciones MEM, ADD, MUL, SUB y DIV
-    void clear_memory();
 };
 
 class ClockInterpreter {
