@@ -59,7 +59,9 @@ sys_opcode_map = {
     "IND": 0x0D,
     "ING": 0x0E,
     "TIM": 0x0F,
-    "SLP": 0x10
+    "SLP": 0x10,
+    "SFA": 0x11,
+    "FZE": 0x12
 }
 
 def split_line(line):

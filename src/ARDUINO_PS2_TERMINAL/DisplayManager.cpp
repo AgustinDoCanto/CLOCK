@@ -20,7 +20,7 @@ void DisplayManager::init(){
   } else if (u8g.getMode() == U8G_MODE_HICOLOR) {
     u8g.setHiColorByRGB(255, 255, 255);
   }
-  }
+}
 
 void DisplayManager::clearScreen(){
   this->textBuffer = "";
