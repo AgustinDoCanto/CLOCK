@@ -1,4 +1,3 @@
-// Creado por Agustin Do Canto 2024
 #ifndef CLOCKINTERPRETER_H
 #define CLOCKINTERPRETER_H
 
@@ -102,7 +101,7 @@ enum SysOpcode {
     ING = 0x0E,
     TIM = 0x0F,
     SLP = 0x10,
-    SFA = 0x11  // 1 if Still file available 0 if not = file.available() > 0
+    SFA = 0x11,  // 1 if Still file available 0 if not = file.available() > 0
     FZE = 0x12
 };
 
@@ -114,7 +113,7 @@ class Memory {
     Memory();
 
     uint8_t bank_A[BANK_A_LENGTH];
-    int bank_B[BANK_B_LENGTH]; 
+    int32_t bank_B[BANK_B_LENGTH];  // Cambiado de int a int32_t
     
     bool pos_is_zero(uint8_t register_map, uint8_t pos);
     void bank_op(uint8_t fst_pos, uint8_t snd_pos, uint8_t register_pair, Opcode opcode); // Engloba las operaciones MEM, ADD, MUL, SUB y DIV
@@ -140,6 +139,6 @@ void SYS_file_seek(uint8_t buffer[4], Memory &memory, File &file);
 void SYS_file_read(uint8_t buffer[4], Memory &memory, File &file); 
 void SYS_file_close(File &file);
 void SYS_still_file_available(uint8_t buffer[4], Memory &memory, File &file);
-
+void SYS_file_size(uint8_t buffer[4], Memory &memory, File &file);
 
 #endif

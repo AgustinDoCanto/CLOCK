@@ -136,6 +136,9 @@ void handle_SYS_function(uint8_t buffer[4], Memory &memory, DisplayManager &cons
     case SFA:
         SYS_still_file_available(buffer, memory, file); // Guarda un 1 en el banco si todavia queda contenido y 0 si no
       break;
+    case FZE:
+        SYS_file_size(buffer, memory, file);
+       break;
     case DIG:
       break;
     case ANG:
@@ -272,7 +275,7 @@ void SYS_file_write(uint8_t buffer[4], Memory &memory, File &file, bool isASCII)
 }
 
 void SYS_file_seek(uint8_t buffer[4], Memory &memory, File &file) { // 0: SYS 1: SEK 2: <VALUE> 3: <BANK>
-    int value = 0;
+    int32_t value = 0;
 
     // Determinar el valor a escribir según el banco
     switch (buffer[3]) {
@@ -340,6 +343,21 @@ void SYS_still_file_available(uint8_t buffer[4], Memory &memory, File &file){ //
       break;
     case SB:
         memory.bank_B[memory.bank_B[buffer[2]]] = file.available() ? 1 : 0;
+      break;
+    }
+}
+
+void SYS_file_size(uint8_t buffer[4], Memory &memory, File &file){
+  if (!file) {  // Verificar si el archivo está abierto
+    return;  // Salir si el archivo no está abierto
+  }
+
+   switch(buffer[3]){ // Solo se permite el banco B por el tipo int32_t
+    case B:
+        memory.bank_B[buffer[2]] = file.size();
+      break;
+    case SB:
+        memory.bank_B[memory.bank_B[buffer[2]]] = file.size();
       break;
     }
 }

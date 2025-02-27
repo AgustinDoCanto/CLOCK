@@ -72,7 +72,7 @@ def split_line(line):
     # for part in splited_line: print(part)
     return splited_line
 
-def ensamblar_codigo(lines):
+def assembly_code(lines):
     binario = bytearray()
     labels = {}  # Diccionario de etiquetas con sus posiciones
 
@@ -146,7 +146,7 @@ if __name__ == '__main__':
         with open(f"{FILE_PATH}", "r") as f:
             lines = f.readlines()
 
-        codigo_binario = ensamblar_codigo(lines)
+        codigo_binario = assembly_code(lines)
 
         print("-"*22+"\n")
         print(codigo_binario)
