@@ -28,6 +28,7 @@ class DisplayManager{
     void updateText(); // Imprime el contenido de text buffer borrando la pantalla
     void print(const String &text);
     void print(char c);
+    void printv(int value);
     void delOneOnBuffer();
   };
 

@@ -104,11 +104,40 @@ void Memory::bank_op(uint8_t fst_pos, uint8_t snd_pos, uint8_t register_pair, Op
 void handle_SYS_function(uint8_t buffer[4], Memory &memory, DisplayManager &console, PS2Keyboard &keyboard) {
   switch(buffer[1]){
     case PRT:
-        SYS_print(buffer, memory, console);
+        SYS_print(buffer, memory, console); // Imprime el valor del banco como ASCII
       break;
     case INP:
-        SYS_input(buffer, memory, keyboard);
+        SYS_input(buffer, memory, keyboard); // Ingresa el valor en ASCII en el banco
      break;
+    case VAL:
+        SYS_print(buffer, memory, console); // Imprime el valor del banco
+      break;
+    case FPO:
+      break;
+    case WRT:
+      break;
+    case WRB:
+      break;
+    case SEK:
+      break;
+    case RAD:
+      break;
+    case RAB:
+      break;
+    case FPC:
+      break;
+    case DIG:
+      break;
+    case ANG:
+      break; 
+    case IND:
+      break;
+    case ING:
+      break;
+    case TIM:
+      break;
+    case SLP:
+    break; 
     }
   }
 
@@ -119,54 +148,51 @@ void handle_JNZ_function(uint8_t buffer[4], Memory &memory, File &file) {
 }
 
 void SYS_print(uint8_t buffer[4], Memory &memory, DisplayManager &console) {
-  switch(buffer[3]){ // SYS PRT <value> <bank>
+  switch(buffer[3]){ // 0: SYS 1: PRT/VAL 2: <value> 3: <bank>
     case A:
-      if((char)memory.bank_A[buffer[2]] == PS2_DELETE){
-        console.delOneOnBuffer();
-        console.updateText();
-        return;
-      }
-      console.print((char)memory.bank_A[buffer[2]]);
+        if(buffer[1] != VAL && (char)memory.bank_A[buffer[2]] == PS2_DELETE){
+          console.delOneOnBuffer();
+          console.updateText();
+          return;
+        }
+        if(buffer[1] == PRT) {console.print((char)memory.bank_A[buffer[2]]); }
+        if(buffer[1] == VAL) {console.printv(memory.bank_A[buffer[2]]); } 
       break;
     case B:
-      if((char)memory.bank_B[buffer[2]] == PS2_DELETE){
-        console.delOneOnBuffer();
-        console.updateText();
-        return;
-      }
-      console.print((char)memory.bank_B[buffer[2]]);
+        if(buffer[1] != VAL && (char)memory.bank_B[buffer[2]] == PS2_DELETE){
+          console.delOneOnBuffer();
+          console.updateText();
+          return;
+        }
+        if(buffer[1] == PRT){ console.print((char)memory.bank_B[buffer[2]]); }
+        if(buffer[1] == VAL){ console.printv(memory.bank_B[buffer[2]]); } 
       break;
     case C:
-      if((char)buffer[2] == PS2_DELETE){
-        console.delOneOnBuffer();
-        console.updateText();
-        return;
-      }
-      console.print((char)buffer[2]);
-      break;
-    case N:
-      if((char)-buffer[2] == PS2_DELETE){
-        console.delOneOnBuffer();
-        console.updateText();
-        return;
-      }
-      console.print((char)-buffer[2]);
+        if(buffer[1] != VAL && (char)buffer[2] == PS2_DELETE){
+          console.delOneOnBuffer();
+          console.updateText();
+          return;
+        }
+        if(buffer[1] == PRT) { console.print((char)buffer[2]); }
+        if(buffer[1] == VAL) { console.printv(buffer[2]); }
       break;
     case SA:
-      if((char)memory.bank_A[memory.bank_A[buffer[2]]] == PS2_DELETE){
-        console.delOneOnBuffer();
-        console.updateText();
-        return;
-      }
-      console.print((char)memory.bank_A[memory.bank_A[buffer[2]]]);
+        if(buffer[1] != VAL &&(char)memory.bank_A[memory.bank_A[buffer[2]]] == PS2_DELETE){
+          console.delOneOnBuffer();
+          console.updateText();
+          return;
+        }
+        if(buffer[1] == PRT) { console.print((char)memory.bank_A[memory.bank_A[buffer[2]]]); }
+        if(buffer[1] == VAL) { console.printv(memory.bank_A[memory.bank_A[buffer[2]]]); }
       break;
     case SB:
-      if((char)memory.bank_B[memory.bank_B[buffer[2]]] == PS2_DELETE){
-        console.delOneOnBuffer();
-        console.updateText();
-        return;
-      }
-      console.print((char)memory.bank_B[memory.bank_B[buffer[2]]]);
+        if(buffer[1] != VAL && (char)memory.bank_B[memory.bank_B[buffer[2]]] == PS2_DELETE){
+          console.delOneOnBuffer();
+          console.updateText();
+          return;
+        }
+        if(buffer[1] == PRT) { console.print((char)memory.bank_B[memory.bank_B[buffer[2]]]); }
+        if(buffer[1] == VAL) { console.printv(memory.bank_B[memory.bank_B[buffer[2]]]); }
       break;
     }
     console.updateText();

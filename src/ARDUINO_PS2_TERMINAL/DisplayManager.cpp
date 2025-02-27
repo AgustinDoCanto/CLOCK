@@ -74,6 +74,17 @@ void DisplayManager::print(const String &text){
     }
   }
 
+void DisplayManager::printv(int value){
+  String aux = "";
+  aux = value;
+  if ((this->textBuffer.length() + aux.length()) <= 126) {// Si no excede la longitud máxima, agrega el texto a la cadena 
+    this->textBuffer += aux;
+  }else{
+    this->textBuffer = "";
+    this->textBuffer += aux;
+    }
+  }
+
 void DisplayManager::print(char c){
   if ((this->textBuffer.length() + 1) <= 126) { // Si no excede la longitud máxima, agrega el texto a la cadena
     this->textBuffer += c;

@@ -86,7 +86,21 @@ enum RegisterPair {
 
 enum SysOpcode {
     PRT = 0x01,
-    INP = 0x02
+    INP = 0x02,
+    VAL = 0x03,
+    FPO = 0x04,
+    WRT = 0x05,
+    WRB = 0x06,
+    SEK = 0x07,
+    RAD = 0x08,
+    RAB = 0x09,
+    FPC = 0x0A,
+    DIG = 0x0B,
+    ANG = 0x0C,
+    IND = 0x0D,
+    ING = 0x0E,
+    TIM = 0x0F,
+    SLP = 0x10
 };
 
 template <typename T1, typename T2>
