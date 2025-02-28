@@ -41,6 +41,10 @@ register_pairs_map = {
     "$AB": 0x12,
     "$BA": 0x13,
     "$BB": 0x14,
+    "$AC": 0x15,
+    "$BC": 0x16,
+    "$AN": 0x17, 
+    "$BN": 0x18 
 }
 
 sys_opcode_map = {
@@ -97,7 +101,6 @@ def assembly_code(lines):
                         bank1 = (parts[1][:2], int(parts[1][4:])) # Pair (BANK A or B, Value)
                     else:
                         bank1 = (parts[1][:1], int(parts[1][2:])) # Pair (BANK A or B, Value)
-
                     
                     if parts[2][:1] == '$':
                         bank2 = (parts[2][:2], int(parts[2][4:]))  # Pair (BANK A, B or C, Value)
@@ -127,7 +130,7 @@ def assembly_code(lines):
                         bank = (parts[1][:2], int(parts[1][4:]))
                     else:
                         bank = (parts[1][:1], int(parts[1][2:]))
-                    
+
                     instruction_line = [operation_code, bank[1], position_to_jump, register_map[f"{bank[0]}"]] 
                     print(f"{len(binario) // 4}: {instruction_line}")
                     binario.extend(instruction_line)  # Agregar 4 bytes
@@ -141,21 +144,18 @@ def assembly_code(lines):
 if __name__ == '__main__':
     FILE_PATH = sys.argv[1]
     FILE_NAME = os.path.splitext(os.path.basename(FILE_PATH))[0] # Obtiene el nombre base y le quita la extension
-    try:
-        # Leer código CLOCK y compilar a binario
-        with open(f"{FILE_PATH}", "r") as f:
-            lines = f.readlines()
+    #try:
+    # Leer código CLOCK y compilar a binario
+    with open(f"{FILE_PATH}", "r") as f:
+        lines = f.readlines()
+    codigo_binario = assembly_code(lines)
+    print("-"*22+"\n")
+    print(codigo_binario)
+    print("\n"+"-"*22+"\n")
+    print(f"Final size: {len(codigo_binario)} bytes")
+    # Guardar en binario
+    with open(f"{FILE_NAME}.rck", "wb") as f:
+        f.write(codigo_binario)
 
-        codigo_binario = assembly_code(lines)
-
-        print("-"*22+"\n")
-        print(codigo_binario)
-        print("\n"+"-"*22+"\n")
-        print(f"Final size: {len(codigo_binario)} bytes")
-
-        # Guardar en binario
-        with open(f"{FILE_NAME}.rck", "wb") as f:
-            f.write(codigo_binario)
-
-    except Exception as e:
-        print(e) 
+    # except Exception as e:
+       # print(e) 

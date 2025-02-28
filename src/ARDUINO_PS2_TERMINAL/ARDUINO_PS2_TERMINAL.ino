@@ -83,7 +83,7 @@ void keyboardCLI(char c) {
           running_code = true;
           interpreter.run(file, console, keyboard); // Comienza a interpretar el programa indicado
           data="";
-          while(!keyboard.available()) {} // Deja el programa en pantalla hasta que cualquier tecla sea presionada
+          while(!keyboard.available()) {delay(5);} // Deja el programa en pantalla hasta que cualquier tecla sea presionada
           SPI.end();
           digitalWrite(OLED_CS, LOW);
           digitalWrite(SD_CS, HIGH);

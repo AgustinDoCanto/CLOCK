@@ -98,6 +98,10 @@ void Memory::bank_op(uint8_t fst_pos, uint8_t snd_pos, uint8_t register_pair, Op
         case SAB: apply_operation(this->bank_A[this->bank_A[fst_pos]], this->bank_B[snd_pos], opcode); break;
         case SBA: apply_operation(this->bank_B[this->bank_B[fst_pos]], this->bank_A[snd_pos], opcode); break;
         case SBB: apply_operation(this->bank_B[this->bank_B[fst_pos]], this->bank_B[snd_pos], opcode); break;
+        case SAC: apply_operation(this->bank_A[this->bank_A[fst_pos]], snd_pos, opcode); break;
+        case SBC: apply_operation(this->bank_B[this->bank_B[fst_pos]], snd_pos, opcode); break;
+        case SAN: apply_operation(this->bank_A[this->bank_A[fst_pos]], -snd_pos, opcode); break;
+        case SBN: apply_operation(this->bank_B[this->bank_B[fst_pos]], -snd_pos, opcode); break;
     }
 }
 
@@ -131,7 +135,7 @@ void handle_SYS_function(uint8_t buffer[4], Memory &memory, DisplayManager &cons
         SYS_file_read(buffer, memory, file);  // Lee un byte del archivo y lo guarda en un banco en formato BINARIO
       break;
     case FPC:
-        SYS_file_close(file); // Cierra el archivo
+        if(file) { file.close(); } // Cierra el archivo
       break;
     case SFA:
         SYS_still_file_available(buffer, memory, file); // Guarda un 1 en el banco si todavia queda contenido y 0 si no
@@ -139,18 +143,6 @@ void handle_SYS_function(uint8_t buffer[4], Memory &memory, DisplayManager &cons
     case FZE:
         SYS_file_size(buffer, memory, file);
        break;
-    case DIG:
-      break;
-    case ANG:
-      break; 
-    case IND:
-      break;
-    case ING:
-      break;
-    case TIM:
-      break;
-    case SLP:
-    break; 
     }
   }
 
@@ -161,58 +153,73 @@ void handle_JNZ_function(uint8_t buffer[4], Memory &memory, File &file) {
 }
 
 void SYS_print(uint8_t buffer[4], Memory &memory, DisplayManager &console) {
-    uint8_t value = 0;
-    
-    // Obtener el valor según el banco
-    switch (buffer[3]) {
-        case A:
-            value = memory.bank_A[buffer[2]];
-            break;
-        case B:
-            value = memory.bank_B[buffer[2]];
-            break;
-        case C:
-            value = buffer[2];
-            break;
-        case SA:
-            value = memory.bank_A[memory.bank_A[buffer[2]]];
-            break;
-        case SB:
-            value = memory.bank_B[memory.bank_B[buffer[2]]];
-            break;
+  SPI.end();
+  switch(buffer[3]){ // 0: SYS 1: PRT/VAL 2: <value> 3: <bank>
+    case A:
+        if(buffer[1] != VAL && (char)memory.bank_A[buffer[2]] == PS2_DELETE){
+          console.delOneOnBuffer();
+          return;
+        }
+        else if(buffer[1] == PRT) {console.print(memory.bank_A[buffer[2]]); }
+        else if(buffer[1] == VAL) {console.printv(memory.bank_A[buffer[2]]); } 
+      break;
+    case B:
+        if(buffer[1] != VAL && (char)memory.bank_B[buffer[2]] == PS2_DELETE){
+          console.delOneOnBuffer();
+          return;
+        }
+        else if(buffer[1] == PRT){ console.print(memory.bank_B[buffer[2]]); }
+        else if(buffer[1] == VAL){ console.printv(memory.bank_B[buffer[2]]); }
+         
+      break;
+    case C:
+        if(buffer[1] != VAL && (char)buffer[2] == PS2_DELETE){
+          console.delOneOnBuffer();
+          return;
+        }
+        else if(buffer[1] == PRT) { console.print(buffer[2]); }
+        else if(buffer[1] == VAL) { console.printv(buffer[2]); }
+      break;
+    case SA:
+        if(buffer[1] != VAL &&(char)memory.bank_A[memory.bank_A[buffer[2]]] == PS2_DELETE){
+          console.delOneOnBuffer();
+          return;
+        }
+        else if(buffer[1] == PRT) { console.print(memory.bank_A[memory.bank_A[buffer[2]]]); }
+        else if(buffer[1] == VAL) { console.printv(memory.bank_A[memory.bank_A[buffer[2]]]); }
+      break;
+    case SB:
+        if(buffer[1] != VAL && (char)memory.bank_B[memory.bank_B[buffer[2]]] == PS2_DELETE){
+          console.delOneOnBuffer();
+          return;
+        }
+        else if(buffer[1] == PRT) { console.print(memory.bank_B[memory.bank_B[buffer[2]]]);  }
+        else if(buffer[1] == VAL) { console.printv(memory.bank_B[memory.bank_B[buffer[2]]]); }
+      break;
     }
-    
-    if (buffer[1] != VAL && (char)value == PS2_DELETE) { // Si es un carácter de borrado, eliminar y actualizar
-        console.delOneOnBuffer();
-        console.updateText();
-        return;
-    }
-
-    if (buffer[1] == PRT) { // Imprimir el valor según el modo
-        console.print((char)value);
-        console.updateText();
-    } else if (buffer[1] == VAL) {
-        console.printv(value);
-        console.updateText();
-    }
-    console.updateText();
-}
+  }
 
 void SYS_input(uint8_t buffer[4], Memory &memory, PS2Keyboard &keyboard){
   while(!keyboard.available()){} // Espera a que el teclado este disponible
   char received_character = keyboard.read();
   switch(buffer[3]){ // SYS INP <pos> <bank>
     case A:
-      memory.bank_A[buffer[2]] = (int)received_character; 
+      memory.bank_A[buffer[2]] = (uint8_t)received_character; 
       break;
     case B:
-      memory.bank_B[buffer[2]] = (int)received_character;
+      memory.bank_B[buffer[2]] = (int32_t)received_character;
+      break;
+    case SA:
+         memory.bank_A[memory.bank_A[buffer[2]]] = (uint8_t)received_character; 
+      break;
+    case SB:
+        memory.bank_B[memory.bank_B[buffer[2]]] = (int32_t)received_character; 
       break;
     }
 }
 
 void SYS_file_open(uint8_t buffer[4], Memory &memory, File &file) { // 0: SYS 1: FPO 2: <VALUE> 3: <BANK>
-    SYS_file_close(file);
+    if(file) {file.close(); }
     String filename = "";
     uint8_t end = 0;  
     switch (buffer[3]) {
@@ -233,7 +240,6 @@ void SYS_file_open(uint8_t buffer[4], Memory &memory, File &file) { // 0: SYS 1:
             while (memory.bank_B[memory.bank_B[end]] != 0 && end < BANK_B_LENGTH) { filename += (char)memory.bank_B[memory.bank_B[end]]; end++; }
             break;
     }
-    if (file){ file.close(); }
     file = SD.open(filename.c_str(), O_RDWR | O_CREAT);
 }
 
@@ -300,32 +306,25 @@ void SYS_file_seek(uint8_t buffer[4], Memory &memory, File &file) { // 0: SYS 1:
   }
 
 void SYS_file_read(uint8_t buffer[4], Memory &memory, File &file) { // 0: SYS 1: RAD 2: <VALUE> 3: <BANK>
-    uint8_t value = file.read(); // Leer un byte del archivo
-    
     if(!file) { return; }
+    uint8_t value = file.read(); // Leer un byte del archivo
     // Guardar el valor en el banco correspondiente
     switch (buffer[3]) {
         case A:
             memory.bank_A[buffer[2]] = value;
             break;
         case B:
-            memory.bank_B[buffer[2]] = (int)value;
+            memory.bank_B[buffer[2]] = (int32_t)value;
             break;
         case SA:
             memory.bank_A[memory.bank_A[buffer[2]]] = value;
             break;
         case SB:
-            memory.bank_B[memory.bank_B[buffer[2]]] = (int)value;
+            memory.bank_B[memory.bank_B[buffer[2]]] = (int32_t)value;
             break;
     }
 }
 
-
-void SYS_file_close(File &file) { // 0: SYS 1: FPC 2: <VALUE> 3: <BANK>
-  if(file){ 
-    file.close();
-    }
-}
 
 void SYS_still_file_available(uint8_t buffer[4], Memory &memory, File &file){ // 0: SYS 1: SFA 2: <VALUE> 3: <BANK>
    if (!file) {  // Verificar si el archivo está abierto
@@ -333,16 +332,16 @@ void SYS_still_file_available(uint8_t buffer[4], Memory &memory, File &file){ //
   }
   switch(buffer[3]){
     case A:
-        memory.bank_A[buffer[2]] = file.available() ? 1 : 0;
+        memory.bank_A[buffer[2]] = (file.available() > 0) ? 1 : 0;
       break;
     case B:
-        memory.bank_B[buffer[2]] = file.available() ? 1 : 0;
+        memory.bank_B[buffer[2]] = (file.available() > 0) ? 1 : 0;
       break;
     case SA:
-        memory.bank_A[memory.bank_A[buffer[2]]] = file.available() ? 1 : 0;
+        memory.bank_A[memory.bank_A[buffer[2]]] = (file.available() > 0) ? 1 : 0;
       break;
     case SB:
-        memory.bank_B[memory.bank_B[buffer[2]]] = file.available() ? 1 : 0;
+        memory.bank_B[memory.bank_B[buffer[2]]] = (file.available()> 0) ? 1 : 0;
       break;
     }
 }

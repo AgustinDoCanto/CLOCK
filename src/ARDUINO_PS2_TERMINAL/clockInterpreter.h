@@ -10,6 +10,7 @@
 
 #define BANK_A_LENGTH 64
 #define BANK_B_LENGTH 32
+#define MAX_FILENAME_LENGTH 20
 
 // Cambiar el valor de debug a 0 para dejar de imprimir mensajes por serial
 #define DEBUG 0
@@ -81,7 +82,11 @@ enum RegisterPair {
     SAA = 0x11,
     SAB = 0x12,
     SBA = 0x13,
-    SBB = 0x14
+    SBB = 0x14,
+    SAC = 0x15,
+    SBC = 0x16,
+    SAN = 0x17,
+    SBN = 0x18
 };
 
 enum SysOpcode {
@@ -137,7 +142,6 @@ void SYS_file_open(uint8_t buffer[4], Memory &memory, File &file);
 void SYS_file_write(uint8_t buffer[4], Memory &memory, File &file, bool isASCII); 
 void SYS_file_seek(uint8_t buffer[4], Memory &memory, File &file); 
 void SYS_file_read(uint8_t buffer[4], Memory &memory, File &file); 
-void SYS_file_close(File &file);
 void SYS_still_file_available(uint8_t buffer[4], Memory &memory, File &file);
 void SYS_file_size(uint8_t buffer[4], Memory &memory, File &file);
 
