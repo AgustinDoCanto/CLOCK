@@ -160,7 +160,7 @@ void handle_JNZ_function(uint8_t buffer[4], Memory &memory, File &file) {
 }
 
 void handle_JEZ_function(uint8_t buffer[4], Memory &memory, File &file) {
-   if (memory.pos_is_zero(buffer[3], buffer[1])) { // JNZ <value> <file position to jump> <bank>
+   if (memory.pos_is_zero(buffer[3], buffer[1])) { // JEZ <value> <file position to jump> <bank>
       file.seek(buffer[2] * 4);  // Usa buffer[2] directamente para el salto
    }
 }

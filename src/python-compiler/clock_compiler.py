@@ -135,7 +135,7 @@ def assembly_code(lines):
                     print(f"{len(binario) // 4}: {instruction_line}") 
                     binario.extend(instruction_line)
 
-                elif parts[0] in ["JNZ"]:  # Manejo de saltos
+                elif parts[0] in ["JNZ", "JEZ"]:  # Manejo de saltos
                     position_to_jump = labels[parts[2]]
                     
                     if parts[1][:1] == '$':
@@ -143,7 +143,7 @@ def assembly_code(lines):
                     else:
                         bank = (parts[1][:1], int(parts[1][2:]))
 
-                    instruction_line = [operation_code, bank[1], position_to_jump, register_map[f"{bank[0]}"]] # JNZ <value> <position> <bank>
+                    instruction_line = [operation_code, bank[1], position_to_jump, register_map[f"{bank[0]}"]] # JNZ/JEZ <value> <position> <bank>
                     print(f"{len(binario) // 4}: {instruction_line}")
                     binario.extend(instruction_line)  # Agregar 4 bytes
             else:
