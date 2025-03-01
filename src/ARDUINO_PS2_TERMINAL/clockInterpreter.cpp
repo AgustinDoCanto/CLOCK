@@ -31,6 +31,9 @@ void ClockInterpreter::run(File &file, DisplayManager &displayManager, PS2Keyboa
             case JNZ:
                 handle_JNZ_function(buffer, this->memory, file);
               break;
+            case JEZ:
+                handle_JEZ_function(buffer, this->memory, file);
+              break;
           }
     }
     file.close();
@@ -156,6 +159,11 @@ void handle_JNZ_function(uint8_t buffer[4], Memory &memory, File &file) {
    }
 }
 
+void handle_JEZ_function(uint8_t buffer[4], Memory &memory, File &file) {
+   if (memory.pos_is_zero(buffer[3], buffer[1])) { // JNZ <value> <file position to jump> <bank>
+      file.seek(buffer[2] * 4);  // Usa buffer[2] directamente para el salto
+   }
+}
 void SYS_print(uint8_t buffer[4], Memory &memory, DisplayManager &console) {
   SPI.end();
   switch(buffer[3]){ // 0: SYS 1: PRT/VAL 2: <value> 3: <bank>

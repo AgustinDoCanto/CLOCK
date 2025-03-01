@@ -2,13 +2,14 @@ import sys
 import os
 
 opcode_map = {
-    "MEM": 0x01,
-    "ADD": 0x02,
-    "SUB": 0x03,
-    "MUL": 0x04,
-    "DIV": 0x05,
-    "SYS": 0x06,
-    "JNZ": 0x08
+    "MEM": 0x01, # Memory Handlig
+    "ADD": 0x02, # Adition
+    "SUB": 0x03, # Substraction
+    "MUL": 0x04, # Multiplication
+    "DIV": 0x05, # Division
+    "SYS": 0x06, # System functions
+    "JNZ": 0x08, # Jump if Not equal to Zero
+    "JEZ": 0x09  # Jump if Equal to Zero
 }
 
 register_map = {
@@ -47,26 +48,26 @@ register_pairs_map = {
     "$BN": 0x18 
 }
 
-sys_opcode_map = {
-    "PRT": 0x01,
-    "INP": 0x02,
-    "VAL": 0x03,
-    "FPO": 0x04,
-    "WRT": 0x05,
-    "WRB": 0x06,
-    "SEK": 0x07,
-    "RAD": 0x08,
-    "RAB": 0x09,
-    "FPC": 0x0A,
+sys_opcode_map = { # System options
+    "PRT": 0x01, # Prints a Character in ASCII
+    "INP": 0x02, # Get a character ASCII value from input
+    "VAL": 0x03, # Prints the numerical valuo of a bank
+    "FPO": 0x04, # Open a file 
+    "WRT": 0x05, # Write a character ASCII in a file
+    "WRB": 0x06, # Write a bank in binary to a file in binary mode
+    "SEK": 0x07, # Moves the file reading pointer to a value (ONLY WORKS WITH BANK B)
+    "RAD": 0x08, # Read a byte from a file to a bank
+    "RAB": 0x09, # Read a byte from a file to a bank in binary
+    "FPC": 0x0A, # Closes the opened file
     "DIG": 0x0B,
     "ANG": 0x0C,
     "IND": 0x0D,
     "ING": 0x0E,
     "TIM": 0x0F,
     "SLP": 0x10,
-    "SFA": 0x11,
-    "FZE": 0x12,
-    "CLS": 0x13
+    "SFA": 0x11, # 1 if Still File Available 0 if not
+    "FZE": 0x12, # Saves the file size in a bank (ONLY WORKS WITH BANK B)
+    "CLS": 0x13 # Clear the Screen
 }
 
 def split_line(line):
@@ -154,7 +155,7 @@ def assembly_code(lines):
 if __name__ == '__main__':
     FILE_PATH = sys.argv[1]
     FILE_NAME = os.path.splitext(os.path.basename(FILE_PATH))[0] # Obtiene el nombre base y le quita la extension
-    #try:
+
     # Leer código CLOCK y compilar a binario
     with open(f"{FILE_PATH}", "r") as f:
         lines = f.readlines()
@@ -170,7 +171,3 @@ if __name__ == '__main__':
     with open(f"{FILE_NAME}.rck", "wb") as f:
         f.write(codigo_binario)
 
-    
-
-    # except Exception as e:
-       # print(e) 

@@ -50,7 +50,8 @@ enum Opcode {
     MUL = 0x04,
     DIV = 0x05,
     SYS = 0x06,
-    JNZ = 0x08
+    JNZ = 0x08,
+    JEZ = 0x09
 };
 
 enum RegisterMap {
@@ -135,6 +136,7 @@ class ClockInterpreter {
 // Funciones auxiliares
 void handle_SYS_function(uint8_t buffer[4], Memory &memory, DisplayManager &console, PS2Keyboard &keyboard, File &file);
 void handle_JNZ_function(uint8_t buffer[4], Memory &memory, File &file);
+void handle_JEZ_function(uint8_t buffer[4], Memory &memory, File &file);
 void SYS_print(uint8_t buffer[4], Memory &memory, DisplayManager &console);
 void SYS_input(uint8_t buffer[4], Memory &memory, PS2Keyboard &keyboard);
 
