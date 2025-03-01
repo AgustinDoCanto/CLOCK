@@ -56,6 +56,7 @@ bool Memory::pos_is_zero(uint8_t bank, uint8_t pos) {
   switch(bank){
     case A: return this->bank_A[pos] == 0; break;
     case B: return this->bank_B[pos] == 0; break;
+    case C: return pos == 0;
     case SA: return this->bank_A[this->bank_A[pos]] == 0; break;
     case SB: return this->bank_B[this->bank_B[pos]] == 0; break;
   }
@@ -143,6 +144,9 @@ void handle_SYS_function(uint8_t buffer[4], Memory &memory, DisplayManager &cons
     case FZE:
         SYS_file_size(buffer, memory, file);
        break;
+    case CLS:
+        console.clearScreen();
+        break;
     }
   }
 
@@ -160,7 +164,7 @@ void SYS_print(uint8_t buffer[4], Memory &memory, DisplayManager &console) {
           console.delOneOnBuffer();
           return;
         }
-        else if(buffer[1] == PRT) {console.print(memory.bank_A[buffer[2]]); }
+        else if(buffer[1] == PRT && isPrintable(memory.bank_A[buffer[2]])) {console.print(memory.bank_A[buffer[2]]); }
         else if(buffer[1] == VAL) {console.printv(memory.bank_A[buffer[2]]); } 
       break;
     case B:
@@ -168,7 +172,7 @@ void SYS_print(uint8_t buffer[4], Memory &memory, DisplayManager &console) {
           console.delOneOnBuffer();
           return;
         }
-        else if(buffer[1] == PRT){ console.print(memory.bank_B[buffer[2]]); }
+        else if(buffer[1] == PRT && isPrintable(memory.bank_B[buffer[2]])){ console.print(memory.bank_B[buffer[2]]); }
         else if(buffer[1] == VAL){ console.printv(memory.bank_B[buffer[2]]); }
          
       break;
@@ -177,7 +181,7 @@ void SYS_print(uint8_t buffer[4], Memory &memory, DisplayManager &console) {
           console.delOneOnBuffer();
           return;
         }
-        else if(buffer[1] == PRT) { console.print(buffer[2]); }
+        else if(buffer[1] == PRT && isPrintable(buffer[2])) { console.print(buffer[2]); }
         else if(buffer[1] == VAL) { console.printv(buffer[2]); }
       break;
     case SA:
@@ -185,7 +189,7 @@ void SYS_print(uint8_t buffer[4], Memory &memory, DisplayManager &console) {
           console.delOneOnBuffer();
           return;
         }
-        else if(buffer[1] == PRT) { console.print(memory.bank_A[memory.bank_A[buffer[2]]]); }
+        else if(buffer[1] == PRT && isPrintable(memory.bank_A[memory.bank_A[buffer[2]]])) { console.print(memory.bank_A[memory.bank_A[buffer[2]]]); }
         else if(buffer[1] == VAL) { console.printv(memory.bank_A[memory.bank_A[buffer[2]]]); }
       break;
     case SB:
@@ -193,7 +197,7 @@ void SYS_print(uint8_t buffer[4], Memory &memory, DisplayManager &console) {
           console.delOneOnBuffer();
           return;
         }
-        else if(buffer[1] == PRT) { console.print(memory.bank_B[memory.bank_B[buffer[2]]]);  }
+        else if(buffer[1] == PRT && isPrintable(memory.bank_B[memory.bank_B[buffer[2]]])) { console.print(memory.bank_B[memory.bank_B[buffer[2]]]);  }
         else if(buffer[1] == VAL) { console.printv(memory.bank_B[memory.bank_B[buffer[2]]]); }
       break;
     }

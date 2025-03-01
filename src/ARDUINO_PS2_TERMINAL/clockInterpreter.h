@@ -107,7 +107,8 @@ enum SysOpcode {
     TIM = 0x0F,
     SLP = 0x10,
     SFA = 0x11,  // 1 if Still file available 0 if not = file.available() > 0
-    FZE = 0x12
+    FZE = 0x12,  // Put file.size() in a B bank
+    CLS = 0x13
 };
 
 template <typename T1, typename T2>
