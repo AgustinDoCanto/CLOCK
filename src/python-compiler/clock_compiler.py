@@ -65,7 +65,8 @@ sys_opcode_map = {
     "TIM": 0x0F,
     "SLP": 0x10,
     "SFA": 0x11,
-    "FZE": 0x12
+    "FZE": 0x12,
+    "CLS": 0x13
 }
 
 def split_line(line):
@@ -76,22 +77,32 @@ def split_line(line):
     # for part in splited_line: print(part)
     return splited_line
 
+
+def parse_file_for_labels(lines): # Recorre el archivo en busca de etiquetas y guarda su posicion en el binario
+    labels = {}
+    position_counter = 0
+    for index, line in enumerate(lines):
+        parts = split_line(line)
+        
+        if parts != []:
+            if parts[0].endswith(":"):
+                etiqueta = parts[0][:-1]  # Eliminar los ":"
+                labels[etiqueta] = position_counter // 4  # Guardar la linea a la que salta
+            else:
+                position_counter += 4 # Cada instruccion ocupara 4 bytes
+    return labels
+
+
 def assembly_code(lines):
     binario = bytearray()
-    labels = {}  # Diccionario de etiquetas con sus posiciones
+    labels = parse_file_for_labels(lines)  # Diccionario de etiquetas con sus posiciones
 
     for index, line in enumerate(lines):
         parts = split_line(line)
 
         if parts != []:
-            # LABELS handling
-            if parts[0].endswith(":"):
-                etiqueta = parts[0][:-1]  # Eliminar los ":"
-                labels[etiqueta] = len(binario) // 4  # Guardar la linea a la que salta
-                continue
-
             # OPERATION handling
-            if parts[0] in opcode_map:
+            if (parts[0] in opcode_map):
                 operation_code = opcode_map[parts[0]]  # Get the opcode
                 
                 # Manejo de instrucciones MEM
@@ -118,7 +129,7 @@ def assembly_code(lines):
                         bank = (parts[2][:2], int(parts[2][4:])) # Pair (BANK A or B, Value)
                     else:
                         bank = (parts[2][:1], int(parts[2][2:])) # Pair (BANK A or B, Value)
-                    
+                                    
                     instruction_line = [operation_code, option, bank[1], register_map[f"{bank[0]}"]]
                     print(f"{len(binario) // 4}: {instruction_line}") 
                     binario.extend(instruction_line)
@@ -131,12 +142,11 @@ def assembly_code(lines):
                     else:
                         bank = (parts[1][:1], int(parts[1][2:]))
 
-                    instruction_line = [operation_code, bank[1], position_to_jump, register_map[f"{bank[0]}"]] 
+                    instruction_line = [operation_code, bank[1], position_to_jump, register_map[f"{bank[0]}"]] # JNZ <value> <position> <bank>
                     print(f"{len(binario) // 4}: {instruction_line}")
                     binario.extend(instruction_line)  # Agregar 4 bytes
-
             else:
-                print(f"Unknown instruction at position {index}")
+                if not parts[0].endswith(':'): print(f"Unknown instruction at position {index}: '{line}'")
 
     return binario
 
@@ -148,7 +158,10 @@ if __name__ == '__main__':
     # Leer código CLOCK y compilar a binario
     with open(f"{FILE_PATH}", "r") as f:
         lines = f.readlines()
+
+    print(parse_file_for_labels(lines))
     codigo_binario = assembly_code(lines)
+    
     print("-"*22+"\n")
     print(codigo_binario)
     print("\n"+"-"*22+"\n")
@@ -156,6 +169,8 @@ if __name__ == '__main__':
     # Guardar en binario
     with open(f"{FILE_NAME}.rck", "wb") as f:
         f.write(codigo_binario)
+
+    
 
     # except Exception as e:
        # print(e) 
