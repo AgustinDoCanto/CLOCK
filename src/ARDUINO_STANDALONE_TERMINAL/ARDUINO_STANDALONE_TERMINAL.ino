@@ -57,13 +57,13 @@ void run_cli(char c) {
   data_received = true;
   if(!running_code){
       switch(c){
-       case 8:
+       case DELETE_CODE:
         console.delOneOnBuffer();
         console.updateText();
         data = data.substring(0, data.length() - 1);
        break;
   
-       case '\n': 
+       case ENTER_CODE: 
         if (data.substring(0, 3).equals("RUN")) { 
           String filename = data.substring(4, data.length());        
           console.clearScreen();
@@ -88,7 +88,7 @@ void run_cli(char c) {
        break;
   
        default:
-         if(c != '\t' && c != '\r' && c != '\n'){data+=c;}
+         if(c != '\t' && c != '\r' && c != ENTER_CODE){data+=c;}
          console.print(c);
          console.updateText();
       }

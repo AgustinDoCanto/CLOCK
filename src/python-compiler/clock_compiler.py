@@ -67,7 +67,7 @@ sys_opcode_map = { # System options
     "SLP": 0x10,
     "SFA": 0x11, # 1 if Still File Available 0 if not
     "FZE": 0x12, # Saves the file size in a bank (ONLY WORKS WITH BANK B)
-    "CLS": 0x13 # Clear the Screen
+    "CLS": 0x13, # Clear the Screen
 }
 
 def split_line(line):

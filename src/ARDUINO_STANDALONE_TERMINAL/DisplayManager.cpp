@@ -20,7 +20,8 @@ void DisplayManager::init(){
   } else if (u8g.getMode() == U8G_MODE_HICOLOR) {
     u8g.setHiColorByRGB(255, 255, 255);
   }
-  }
+  u8g.setFont(u8g_font_6x10);
+}
 
 void DisplayManager::clearScreen(){
   this->textBuffer = "";
@@ -45,22 +46,22 @@ void DisplayManager::showLogo(){
 
 void DisplayManager::updateText(){
     digitalWrite(OLED_CS, LOW);
-    digitalWrite(SD_CS, HIGH);
-    u8g.setFont(u8g_font_6x10);
+    
     u8g.firstPage();
     do {
-        byte longitudCadena = this->textBuffer.length();
-        byte inicio = 0;
-        byte largoSubcadena = 21; // Depende de cuantos caracteres entren en el display, en este caso entran 21
-        byte cantSubcadenas = 1;
+        uint8_t longitudCadena = this->textBuffer.length();
+        uint8_t inicio = 0;
+        uint8_t largoSubcadena = 21; // Depende de cuantos caracteres entren en el display, en este caso entran 21
+        uint8_t cantSubcadenas = 1;
        
         while (inicio < longitudCadena) {
-          byte longitudSubcadena = min(largoSubcadena, longitudCadena - inicio);
+          uint8_t longitudSubcadena = min(largoSubcadena, longitudCadena - inicio);
           u8g.drawStr(0, 10*cantSubcadenas, this->textBuffer.substring(inicio, inicio + longitudSubcadena).c_str());
           inicio += longitudSubcadena;
           cantSubcadenas++;
         }
      } while (u8g.nextPage());
+     
     SPI.end();
     digitalWrite(OLED_CS, HIGH);
   }
@@ -72,6 +73,19 @@ void DisplayManager::print(const String &text){
     this->textBuffer = "";
     this->textBuffer += text;
     }
+   updateText();
+  }
+
+void DisplayManager::printv(int value){
+  String aux = "";
+  aux = value;
+  if ((this->textBuffer.length() + aux.length()) <= 126) {// Si no excede la longitud máxima, agrega el texto a la cadena 
+    this->textBuffer += aux;
+  }else{
+    this->textBuffer = "";
+    this->textBuffer += aux;
+    }
+  updateText();
   }
 
 void DisplayManager::print(char c){
@@ -81,10 +95,12 @@ void DisplayManager::print(char c){
     this->textBuffer = "";
     this->textBuffer += c;
     }
+   updateText();
 }
 
 void DisplayManager::delOneOnBuffer(){
   this->textBuffer = this->textBuffer.substring(0, this->textBuffer.length() - 1); 
+  updateText();
 }
   
 
