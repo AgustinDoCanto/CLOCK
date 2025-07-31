@@ -61,7 +61,7 @@ El código en CLOCK es "compilado" (traducido) mediante python a instrucciones d
 
 ### Aprovechamiento de los recursos al maximo
 
-CLOCK utiliza dos 'bancos' de memoria acotados que se definen sobre el hardware existente por lo que los programas en CLOCK deberán ser planificados para explotar estos recursos al máximo.
+CLOCK utiliza dos 'bancos' de memoria acotados que se definen sobre el hardware existente por lo que los programas en CLOCK deberán ser planificados para utilizar estos recursos al máximo.
 
 ### Bajo coste
 
