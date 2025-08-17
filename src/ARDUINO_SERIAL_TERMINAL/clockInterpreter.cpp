@@ -365,12 +365,7 @@ bool isPWMPin(uint8_t pin) {
     return (pin == 3 || pin == 5 || pin == 6 || pin == 9 || pin == 10 || pin == 11);
 }
 
-void SYS_pin_OUTPUT(uint8_t buffer[4], Memory &memory) {
-  
-}
+void SYS_pin_OUTPUT(uint8_t buffer[4], Memory &memory) {}
 
 
-void SYS_pin_INPUT(uint8_t buffer[4], Memory &memory) {
-  
-  
-  }
+void SYS_pin_INPUT(uint8_t buffer[4], Memory &memory) {}

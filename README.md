@@ -26,7 +26,7 @@ Este surge como proyecto personal con el objetivo de crear una computadora/termi
 
 ## Ventajas de utilizar CLOCK
 
-El código en CLOCK se "compila" y se ejecuta directamente sobre una tarjeta SD ampliando la memoria del Arduino a el tamaño de la tarjeta SD a través de la interfaz SPI de un módulo SD. 
+El código en CLOCK se "compila" y se ejecuta directamente sobre una tarjeta SD ampliando la memoria del Arduino al tamaño de la tarjeta SD. Todo esto a través de la interfaz SPI del microcontrolador en comunicación con el módulo SD utilizado. 
 
 Con esto se logra pasar de 32KB (Flash) del Arduino a 2, 8, 16, o 32 GB (dependiendo de la tarjeta SD). Logrando asi separar el código de la plataforma y generando algo similar al bytecode de java, pudiendo correr el mismo código sobre cualquier otro microcontrolador siempre y cuando cuente con el interprete correspondiente (Algo similar a lo que ocurre con la JVM de java).
 
