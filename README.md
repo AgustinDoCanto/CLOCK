@@ -1,7 +1,7 @@
 # CLOCK - Lenguaje de programación
 
-![CLOCK Standalone Version](img/ASCII_CODE_RUN.jpeg)
-![CLOCK Standalone Version](img/ASCII_CODE_RESULT.jpeg)
+![CLOCK Standalone Version](docs/img/ASCII_CODE_RUN.jpeg)
+![CLOCK Standalone Version](docs/img/ASCII_CODE_RESULT.jpeg)
 
 # Indice
 
