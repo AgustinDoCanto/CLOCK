@@ -67,6 +67,8 @@ Los bancos de memoria existentes son los siguientes:
 
 ## Como escribir, "compilar" y ejecutar un archivo CLOCK
 
+### Compilación
+
 Para "compilar" y ejecutar un archivo en CLOCK se debe contar con el interprete grabado en la placa, el archivo .CLK escrito.
 
 Luego parado sobre el directorio CLOCK_compiler corremos la siguiente linea.
@@ -75,51 +77,60 @@ Luego parado sobre el directorio CLOCK_compiler corremos la siguiente linea.
 python clock_compiler.py <ruta_al_archivo_clk>
 ```
 
-El mismo nos creará en el directorio donde estemos ejecutando el compilador, un archivo .RCK con el código compilado y listo para ser ejecutado por el intérprete.
+>El mismo nos creará en el directorio donde estemos ejecutando el compilador, un archivo .RCK con el código compilado y listo para ser ejecutado por el intérprete.
 
-Posteriormete deberemos mover este archivo a la tarjeta SD que leerá el microcontrolador. 
+## Ejecución
 
-Este proceso se puede llevar a cabo con la cantidad de archivos que se desee permitiendo correr sobre una misma arquitectura de hardware, más de un programa y el mismo programa en cualquier arquitectura de hardware distinta pero con el intérprete correspondiente.
+Para ejecutar el archivo compilado deberemos mover el archivo resultado de la compilación a la tarjeta SD que leerá el microcontrolador. 
+
+> Este proceso se puede llevar a cabo con la cantidad de archivos que se desee permitiendo correr sobre una misma arquitectura de hardware, más de un programa y el mismo programa en cualquier arquitectura de hardware distinta pero con el intérprete correspondiente.
 
 ## Guía de uso
 
-CLOCK se diseño sobre el IDE de arduino por lo que para utilizarlo basta con subir el interprete correspondiente al microcontrolador.
+CLOCK se diseño sobre el IDE de arduino por lo que para utilizarlo basta con subir el código del interprete correspondiente al microcontrolador.
 
-También puede optar por modificar el código existente y crear su propio intérprete siguiendo los estándares.
+También puede optar por modificar el código existente y crear su propio intérprete siguiendo los estándares.Permitiendo así la ampliación del mismo y la inclusión de instrucciones no implementadas, contempladas o nuevas. 
 
 ### Bancos de memoria
 
-CLOCK cuenta con dos bancos de memoria principales A y B, que al inciar cualquier programa empiezan con el valor 0:
+CLOCK cuenta con dos bancos de memoria (registros) principales A y B, que al inciar cualquier programa comienzan inicializados con el valor 0:
 
 ### Banco A
 
-El banco opera sobre el tipo 'uint8_t' o enteros sin signo de 8 bits, lo que quiere decir que puede almacenar números desde el 0 al 255 y tiene un largo de 64. Para acceder a una posición de este banco se utiliza el prefijo AX seguido de dos números decimales. 
+El banco opera sobre el tipo 'uint8_t' o enteros sin signo de 8 bits, lo que quiere decir que puede almacenar números desde el 0 al 255 y tiene un largo máximo de 64. Para acceder a una posición de este banco se utiliza el prefijo AX seguido de dos números decimales. 
 
-**Ejemplo:** 
+```
+Ejemplo: 
 
 AX00 => Indica la posición 0 del banco A (primera posición del banco)
 AX63 => Indica la posición 63 del banco A (última posición del banco)
+```
 
 ### Banco B
 
 El banco opera sobre el tipo 'int' o enteros, lo que quiere decir que puede almacenar números en el rango de -32.768 al 32.767 y tiene un largo de 64. Para acceder a una posición de este banco se utiliza el prefijo BX seguido de dos números decimales. 
 
-**Ejemplo:** 
+```
+Ejemplo:
 
 BX00 => Indica la posición 0 del banco B (primera posición del banco)
 BX31 => Indica la posición 31 del banco B (última posición del banco)
+```
 
-### 'Banco' C y N
+
+### Banco C y N
 
 Los 'bancos' de memoria C y N refieren a constantes positivas y negativas, y no a posiciones de memoria en si, a través de estos se pueden indicar cantidades constantes. Se utilizan mediante el prefijo CX y NX respectivamente seguido de dos decimales.
 
-**Ejemplo:**
+```
+Ejemplo:
 
 CX04 => Indica la cantidad positiva 4
 NX04 => Indica la cantidad -4 (negativo)
 NX99 => Indica la cantidad -99 (negativa)
+```
 
-**NOTA:** El uso de números negativos solo es admitido sobre el banco B ya que el banco A solo opera con positivos.
+> **NOTA:** El uso de números negativos solo es admitido sobre el banco B ya que el banco A solo opera con positivos.
 
 ### Ejemplos de uso:
 
@@ -127,57 +138,76 @@ NX99 => Indica la cantidad -99 (negativa)
 
 La instrucción MEM recibe dos bancos de memoria y asigna el valor del segundo al primero:
 
-**Ejemplo 1:**
+```
+Ejemplo 1:
+
 MEM AX00, CX10; =>  A la posición 0 del banco A le asigna el valor 10
 MEM BX20, NX30; =>  A la posición 20 del banco B le asigna el valor -30
+```
 
 #### Instrucción ADD
 
 La instrucción ADD recibe dos bancos de memoria y suma el valor del segundo banco al primero, pudiendo ser este un banco constante o un banco en si:
 
-**Ejemplo 1:**
+```
+Ejemplo 1:
+
 MEM AX10, CX10; => Asigna el valor 10 a AX10
 MEM BX20, CX10; => Asigna el valor 10 a BX20
 ADD AX10, BX20; => Suma el valor de BX20 (10) al valor de AX10 (también 10) y deja el resultado en AX10. Ahora AX10 tiene el valor de 10.
+```
+
 
 #### Instrucción SUB
 
 La instrucción SUB recibe dos bancos de memoria y resta el valor del segundo banco al primero, pudiendo ser este un banco constante o un banco en si:
 
-**Ejemplo 1:**
+
+```
+Ejemplo 1:
+
 MEM AX10, CX10; => Asigna el valor 10 a AX10
 MEM BX20, CX10; => Asigna el valor 10 a BX20
 SUB AX10, BX20; => Resta el valor de BX20 (10) al valor de AX10 (también 10) y deja el resultado en AX10. Ahora AX10 tiene el valor de 0.
+```
+
 
 #### Instrucción MUL
 
 La instrucción MUL recibe dos bancos de memoria y multiplica el valor del segundo banco al primero, pudiendo ser este un banco constante o un banco en si:
 
-**Ejemplo 1:**
+
+```
+Ejemplo 1:
+
 MEM AX10, CX10; => Asigna el valor 10 a AX10
 MEM BX20, CX10; => Asigna el valor 10 a BX20
 MUL AX10, BX20; => Multiplica el valor de BX20 (10) al valor de AX10 (también 10) y deja el resultado en AX10. Ahora AX10 tiene el valor de 100.
+```
 
 #### Instrucción DIV
 
 La instrucción MUL recibe dos bancos de memoria y multiplica el valor del segundo banco al primero, pudiendo ser este un banco constante o un banco en si:
 
-**Ejemplo 1:**
+```
+Ejemplo 1:
+
 MEM AX10, CX10; => Asigna el valor 10 a AX10
 MEM BX20, CX10; => Asigna el valor 10 a BX20
 DIV AX10, BX20; => Multiplica el valor de BX20 (10) al valor de AX10 (también 10) y deja el resultado en AX10. Ahora AX10 tiene el valor de 1.
+```
+
 
 #### Declaración de LABELS (etiquetas)
 
 Las etiquetas funcionan para marcar un punto a donde otra parte del programa saltará, para esto cualquier secuencia de caracteres ASCII seguida de ':' es considerada una etiqueta:
 
-**Ejemplo 1:** 'Nombre_de_la_etiqueta:'
-
-**Ejemplo 2:** 'Etiqueta:'
-
-**Ejemplo 3:** 'LOOP:'
-
-**Ejemplo 4:** 'E1:'
+```
+Ejemplo 1: 'Nombre_de_la_etiqueta:'
+Ejemplo 2: 'Etiqueta:'
+Ejemplo 3: 'LOOP:'
+Ejemplo 4: 'E1:'
+```
 
 Estas tienen utilidad en conjunto con la instrucción JNZ. 
 
@@ -185,7 +215,8 @@ Estas tienen utilidad en conjunto con la instrucción JNZ.
 
 La instrucción JNZ recibe un banco de memoria y el nombre de una etiqueta y si el banco de memoria recibido no tiene el valor de 0 salta a la etiqueta:
 
-**Ejemplo 1:**
+```
+Ejemplo 1:
 
 MEM AX10, CX09; => Asigna el valor 10 a AX10
 LOOP1:
@@ -198,6 +229,7 @@ LOOP2:
 SYS PRT, CX66; => Imprime la letra B
 SUB AX10, CX01; => Resta 1 al valor actual en AX10 
 JNZ AX10, LOOP2; => Salta a la etiqueta LOOP2 si el valor en AX10 no es 0
+```
 
 Este programa imprime la letra y resta 1 al valor de AX10, como resultado imprimirá 10 veces la letra A y luego imprimirá 10 veces la letra B.
 
@@ -205,11 +237,21 @@ Este programa imprime la letra y resta 1 al valor de AX10, como resultado imprim
 
 La instrucción SYS es la encargada de manejar las operaciones del sistema, como entrada, salida, impresión de caracteres o entrada de caracteres. (En futuras versiones se incluirá el manejo de pines y archivos a través de SYS).
 
-**Ejemplo 1:**
+
+```
+Ejemplo 1:
+
 SYS PRT, CX65; => Imprime la constante 65 que en ASCII corresponde a la 'A' mayúscula, por lo tanto imprime 'A'.
+```
 
-**Ejemplo 2:**
+```
+Ejemplo 2:
+
 SYS PRT, AX20; => Imprimirá el caracter correspondiente al valor de AX20 en ASCII. Por ejemplo si AX20 tuviese el valor 95 imprimiría una barra baja '_'.
+```
 
-**Ejemplo 3:**
+```
+Ejemplo 3:
+
 SYS INP, BX10; => Espera a la entrada por teclado y codifica a su valor ASCII la tecla ingresada, por ejemplo si se apretara la 'V' BX10 almacenaria el valor 86.
+```
