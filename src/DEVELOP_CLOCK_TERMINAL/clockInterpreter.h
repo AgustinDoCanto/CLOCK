@@ -1,4 +1,5 @@
-// Creado por Agustin Do Canto 2025
+// CLOCK - Language and Terminal for Microcontrollers
+// Copyright (C) 2024 Agustin Do Canto
 #ifndef CLOCKINTERPRETER_H
 #define CLOCKINTERPRETER_H
 

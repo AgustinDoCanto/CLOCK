@@ -1,4 +1,5 @@
-// Creado por Agustin Do Canto 2025
+// CLOCK - Language and Terminal for Microcontrollers
+// Copyright (C) 2024 Agustin Do Canto
 #include "clockInterpreter.h"
 
 #include <iostream>

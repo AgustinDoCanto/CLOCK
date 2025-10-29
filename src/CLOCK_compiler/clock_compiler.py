@@ -1,3 +1,5 @@
+# CLOCK - Language and Terminal for Microcontrollers
+# Copyright (C) 2024 Agustin Do Canto
 import sys
 import os
 

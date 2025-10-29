@@ -1,4 +1,5 @@
-// Creado por Agustin Do Canto 2024
+// CLOCK - Language and Terminal for Microcontrollers
+// Copyright (C) 2024 Agustin Do Canto
 #include "clockInterpreter.h"
 
 // Declarations for SD module:

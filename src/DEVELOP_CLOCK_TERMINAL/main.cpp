@@ -1,4 +1,5 @@
-// Por Agustin Do Canto 2025
+// CLOCK - Language and Terminal for Microcontrollers
+// Copyright (C) 2024 Agustin Do Canto
 
 #include <iostream>
 #include <fstream>
@@ -52,7 +53,7 @@ void run_cli(char c) {
 }
 
 int main() {
-    cout << "DoC terminal for CLOCK V0.0.1" << endl;
+    cout << "CLOCK - Language and Terminal for Microcontrollers" << "\nCopyright (C) 2024 Agustin Do Canto\n" << endl;
     cout << "> ";
 
     while (true) {
